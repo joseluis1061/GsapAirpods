@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP</title>
+
+    <style>
+        body {
+            background-color: #222;
+            font-family: system-ui;
+            padding: 20px 20px;
+            height: 5000px;
+        }
+        #log {
+            color: white;
+        }
+        h1 {
+            color: white;
+            text-wrap: balance;
+            text-align: center;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <h1 class="text">El código es poesáa, pero tambiém puede ser magía visual con GSAP</h1>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js"></script>
+
+    <script>
+        // Registrar el plugin
+        gsap.registerPlugin(SplitText)
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Dividir el texto según una opción palabras, letras o lineas / words, chars, lines
+        // Puedes seleccionar los 3 pero normalmente solo usamos uno
+        const splitText = new SplitText(".text", {
+            type: "words, chars, lines"
+        })
+
+        // Crear la animación desde el estado inicial del texto from
+        gsap.from(splitText.lines, {
+            duration: 2,
+            y: 25, // Estado inicial
+            stagger: 0.5,
+            autoAlpha: 0,
+            filter: "blur(10px)"
+        })
+
+
+
+    </script>
+    
+</body>
+</html>

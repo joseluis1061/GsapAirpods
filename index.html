@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP</title>
+
+    <style>
+        body {
+            background-color: #222;
+            font-family: system-ui;
+            padding: 20px 20px;
+            height: 2000px;
+            /* width: 100vw; */
+        }
+        #log {
+            color: white;
+        }
+        h1 {
+            width: 100%;    
+            text-wrap: balance;
+            text-align: center;
+            position: fixed;
+            left: 50%;
+            top: 40%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12vw;
+        }
+        canvas {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            aspect-ratio: 1068/600;
+            width: 100%;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <h1 class="title">AirPods Pro</h1>
+    <canvas id="hero"></canvas>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js"></script>
+
+    <script>
+        // Registrar el plugin
+        gsap.registerPlugin(SplitText)
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Animacion del texto
+        gsap.to(".title", {
+            scale: 1.1,
+            autoAlpha: 0,
+            scrollTrigger: {
+                markers: false, // Marcas de los triggers
+                scrub: 5, // True Vincula la animación con el scroll, con numero indica el tiempo en que dura el scroll
+                start: "center center" // Posicion de inicio de la animación numero pixeles en el eje y palabras tamaño contenedor
+            }
+        })
+
+        // Animacion de imagenes eb canvas
+        const canvas = document.getElementById("hero")
+        const ctx = canvas.getContext("2d") // Contexto del canvas para poder dibujar sobre el
+        canvas.width = 1068
+        canvas.height = 600
+
+        const TOTAL_FRAMES = 65
+
+        // Crea las urls donde estan las imagenes de los frames
+        const createURL = (frame) => {
+            // Crear las url de los frames, rellenando con 0
+            const id = frame.toString().padStart(4, "0")
+            return `https://www.apple.com/105/media/us/airpods-pro/2022/d2deeb8e-83eb-48ea-9721-f567cf0fffa8/anim/hero/medium/${id}.png`
+        }
+
+        // Crea un array de imagenes con las url
+        const images = Array.from({length: TOTAL_FRAMES}, (_, i) => {
+            const img = new Image()
+            img.src = createURL(i)
+            return img
+        })
+
+        // Crea un objeto con el numero de frame
+        const airpods = {
+            frame: 0
+        }
+
+        // La animación se encarga de seleccionar el valor de la propiedad frame del objeto que estamos rastreando
+        gsap.to(airpods, {
+            frame: TOTAL_FRAMES - 1, 
+            ease: "none", // Para que no se anime la imagen solo queremos que cambie
+            snap: "frame", // Para que actualice el numero de frame del objeto que estamos siguiendo
+            scrollTrigger: {
+                scrub: 0.5 // Para que inicie su movimiento 0.5s despues de mover el scroll
+            },
+            onUpdate: render // Cuando actualiza la animación llama la funcion render 
+        })
+
+        // Cargar la primer imagen
+        images[0].onload = () => {
+            render()
+        }
+
+        // Cuando cambie el valor del frame cargamos esa imagen dentro del canvas
+        // La función render borra la anterior imagen y carga la nueva
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height) // Limpiar el canvas
+            ctx.drawImage(images[airpods.frame], 0, 0)
+        }
+
+
+    </script>
+    
+</body>
+</html>
